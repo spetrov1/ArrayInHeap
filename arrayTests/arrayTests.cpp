@@ -15,10 +15,12 @@ namespace arrayTests
 		{
 			Assert::AreEqual(array.size(), (size_t)0);
 		}
+
 		TEST_METHOD(ExpectedEmptyArray) {
 			Assert::IsTrue(array.isEmpty());
 		}
 
+		
 
 	};
 }
