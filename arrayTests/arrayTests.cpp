@@ -5,7 +5,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace arrayTests
 {
-	TEST_CLASS(EmptyArrayTests)
+	TEST_CLASS(EmptyArray)
 	{
 	private:
 		array<int> testArray;
@@ -14,7 +14,7 @@ namespace arrayTests
 	public:
 
 		/// testArray is inited with capacity by default
-		EmptyArrayTests() : capacity(10), testArray() {}
+		EmptyArray() : capacity(10), testArray() {}
 		
 		TEST_METHOD(size_ExpectedSizeIsZero)
 		{
@@ -133,10 +133,127 @@ namespace arrayTests
 			}
 		}
 
+		TEST_METHOD(push_back_PushBackToFullArrayExceptionIsExpected) {
+			testArray.fill(1);
+			try {
+				testArray.push_back(1);
+				Assert::Fail();
+			}
+			catch (std::exception) {
 
+			}
+		}
 
 	};
 
 
+	TEST_CLASS(ArrayWithFirstFiveNaturalNumbers) {
+	private:
+		array<int> testArray;
+		size_t capacity; /// capacity to init testArray
+	public:
+		ArrayWithFirstFiveNaturalNumbers() : capacity(10), testArray(10) {
+			for (int i = 0; i <= 4; ++i)
+				testArray.push_back(i);
+		}
+
+		TEST_METHOD(copyConstructorWorkingAsExpected) {
+			array<int> otherArray = testArray;
+
+			Assert::IsTrue(testArray == otherArray);
+		}
+
+		TEST_METHOD(operatorEquals_WorkingAsExpected) {
+			array<int> otherArray;
+			otherArray = testArray;
+
+			Assert::IsTrue(otherArray == testArray);
+		}
+
+		TEST_METHOD(fill_maintainsCorrectSize) {
+			testArray.fill( rand() );
+
+			Assert::AreEqual(capacity, testArray.size());
+		}
+
+		TEST_METHOD(fill_fillWithCorrectElem) {
+			int elemToFillWith = rand();
+			testArray.fill(elemToFillWith);
+
+			for (int i = 0; i < 9; ++i) {
+				if (testArray[i] != elemToFillWith)
+					Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(operatorBrackets_workingAsExpected) {
+			for (int i = 0; i <= 4; ++i) {
+				if (testArray[i] != i)
+					Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(isEmpty_ExpectedNotEmptyArray) {
+			Assert::IsFalse(testArray.isEmpty());
+		}
+
+		TEST_METHOD(size_ExpectedSizeIsFive) {
+			Assert::AreEqual((size_t)5, testArray.size());
+		}
+
+		TEST_METHOD(push_back_ExpectedSizeIsSix) {
+			testArray.push_back(rand());
+
+			Assert::AreEqual((size_t)6, testArray.size());
+		}
+
+		TEST_METHOD(push_back_CorrectElementsAreInArray) {
+			testArray.push_back(5);
+
+			for (int i = 0; i <= 5; ++i) {
+				if (testArray[i] != i)
+					Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(pop_back_ExpectedSizeIsFour) {
+			testArray.pop_back();
+
+			Assert::AreEqual((size_t)4, testArray.size());
+		}
+
+		TEST_METHOD(pop_back_CorrectElementsAreLeftInArray) {
+			testArray.pop_back(); // testArray = {0, 1 ,2 ,3 }
+
+			for (int i = 0; i <= 3; ++i) {
+				if (testArray[i] != i)
+					Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(back_ExpectedFourToBeReturned) {
+
+			Assert::AreEqual(4, testArray.back());
+		}
+
+		TEST_METHOD(at_WorkingForAllInsertedElems) {
+			for (int i = 0; i <= 4; ++i) {
+				if (testArray[i] != i)
+					Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(at_AccessingInvalidPositionsInArrayExceptionIsExpected) {
+			for (int i = 5; i < 10; ++i) {
+				try {
+					testArray.at(i);
+					Assert::Fail();
+				}
+				catch (std::out_of_range) {
+
+				}
+			}
+		}
+	};
 	
 }

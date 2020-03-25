@@ -135,13 +135,14 @@ inline size_t array<T>::size() const {
 }
 
 
-/// ? If no space ? 
-/// Add element to the end of array
+/// Add element to the end of array \n
 /// \param newElem to be inserted in array
+/// \exception if container is full, exception is throwed
 template<typename T>
 inline void array<T>::push_back(const T& newElem)
 {
-	// ? if no space ?
+	if (usedCapacity == capacity)
+		throw std::exception();
 
 	buffer[usedCapacity++] = newElem;
 }
