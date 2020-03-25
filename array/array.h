@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 // TODO documentation to all the data members and functions
 
 
@@ -31,7 +33,8 @@ public:
 	size_t size() const;
 	
 	
-	void push_back(T);
+	void push_back(const T&);
+	T& pop_back();
 	T& back();
 	const T& back() const;
 
@@ -65,11 +68,11 @@ void array<T>::deleteDynamicMemory() {
 ///
 /// Used for memory allocation for the buffer
 template <typename T>
-array<T>::array(size_t capacity) : capacity(capacity), size(0)
+array<T>::array(size_t _capacity) : capacity(_capacity), usedCapacity(0)
 {
 	buffer = new T[capacity]; // TODO may throw
 
-	copy()
+	capacity = _capacity;
 }
 
 
@@ -90,11 +93,11 @@ array<T>::array(const array& other) {
 /// \warning std::exception is thrown if (this.capacity < other.size)
 template <typename T>
 array<T>& array<T>::operator=(const array& other) {
-	if (this->capacity < other.size) {
+	if (this->capacity < other.size()) {
 		throw std::exception();
 	}
 	if (this != &other) {
-		copy(other.buffer, other.size());
+		copyBuffer(other.buffer, other.size());
 		usedCapacity = other.usedCapacity;
 	}
 	return *this;
@@ -113,7 +116,8 @@ array<T>::~array() {
 template <typename T>
 void array<T>::fill(const T& initElem) {
 	for (size_t i = 0; i < capacity; ++i)
-		buffer[i] = initElem;
+		buffer[i] = initElem; // TODO may throw ?
+	usedCapacity = capacity;
 }
 
 
@@ -131,33 +135,52 @@ inline size_t array<T>::size() const {
 }
 
 
-/// TODO
-/// TODO
-/// TODO
+/// ? If no space ? 
+/// Add element to the end of array
+/// \param newElem to be inserted in array
 template<typename T>
-inline void array<T>::push_back(T)
+inline void array<T>::push_back(const T& newElem)
 {
-	/// TODO
+	// ? if no space ?
+
+	buffer[usedCapacity++] = newElem;
 }
 
 
-/// TODO
-/// TODO
-/// TODO
+/// Return and remove last element
+/// \return Reference to last element
+/// \exception If there is no such element is throwed exception
+template<typename T>
+inline T& array<T>::pop_back()
+{
+	if (isEmpty())
+		throw std::exception();
+	return buffer[--usedCapacity];
+}
+
+
+/// \return Reference to the last element
+///
+/// \exception If there is no such element, exception is throwed
 template<typename T>
 inline T& array<T>::back()
 {
-	// TODO: insert return statement here
+	if (isEmpty())
+		throw std::exception();
+	return buffer[usedCapacity - 1];
 }
 
 
-/// TODO
-/// TODO
-/// TODO
+/// Working for constant instances of array
+/// \return Reference to the last element
+///
+/// \exception If there is no such element, exception is throwed
 template<typename T>
 inline const T& array<T>::back() const
 {
-	// TODO: insert return statement here
+	if (isEmpty())
+		throw std::exception();
+	return buffer[usedCapacity - 1];
 }
 
 
@@ -167,7 +190,7 @@ inline const T& array<T>::back() const
 template<typename T>
 inline T& array<T>::operator[](size_t index)
 {
-	assert(index < size);
+	assert(index < usedCapacity);
 
 	return buffer[index];
 }
@@ -180,7 +203,7 @@ inline T& array<T>::operator[](size_t index)
 template<typename T>
 inline const T& array<T>::operator[](size_t index) const
 {
-	assert(index < size);
+	assert(index < usedCapacity);
 
 	return buffer[index];
 }
@@ -192,8 +215,8 @@ inline const T& array<T>::operator[](size_t index) const
 template<typename T>
 inline T& array<T>::at(size_t index)
 {
-	if (index >= size)
-		throw std::out_of_range();
+	if (index >= usedCapacity)
+		throw std::out_of_range("There is no such element");
 	return buffer[index];
 }
 

@@ -2,10 +2,14 @@
 //
 
 #include <iostream>
+#include "array.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    array<int> arr(3);
+
+    arr.fill(1);
+    std::cout << arr.size();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
