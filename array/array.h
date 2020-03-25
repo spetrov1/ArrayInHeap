@@ -89,7 +89,7 @@ array<T>::array(const array& other) {
 
 
 /// Copy all the elems of given array into this.array \n
-/// 
+/// After operator= capacities of objects remain different if they were different
 /// \warning std::exception is thrown if (this.capacity < other.size)
 template <typename T>
 array<T>& array<T>::operator=(const array& other) {
@@ -135,7 +135,7 @@ inline size_t array<T>::size() const {
 }
 
 
-/// Add element to the end of array \n
+/// Adds element to the end of array \n
 /// \param newElem to be inserted in array
 /// \exception if container is full, exception is throwed
 template<typename T>
@@ -148,7 +148,7 @@ inline void array<T>::push_back(const T& newElem)
 }
 
 
-/// Return and remove last element
+/// Returns and removes last element
 /// \return Reference to last element
 /// \exception If there is no such element is throwed exception
 template<typename T>
@@ -235,7 +235,7 @@ inline const T& array<T>::at(size_t index) const
 }
 
 
-/// \param array to compare to
+/// \param other - array to compare to
 /// \return True if for each i this[i] == other[i] \n
 /// this.capacity != other.capacity is allowed
 template<typename T>
