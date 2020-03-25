@@ -2,10 +2,9 @@
 
 #include <cassert>
 
-// TODO documentation to all the data members and functions
 
 
-/// Ordinary array allocated in heap
+/// Ordinary non-resizable array allocated in heap
 template <typename T>
 class array
 {
@@ -38,7 +37,7 @@ public:
 	T& back();
 	const T& back() const;
 
-	T& operator[](size_t index); // const ?
+	T& operator[](size_t index);
 	const T& operator[](size_t index) const;
 
 	T& at(size_t index);
@@ -53,7 +52,7 @@ public:
 template <typename T>
 void array<T>::copyBuffer(T* _buffer, size_t _bufferSize) {
 	for (size_t i = 0; i < _bufferSize; ++i)
-		buffer[i] = _buffer[i]; /// TODO may throw
+		buffer[i] = _buffer[i]; /// TODO ?
 }
 
 

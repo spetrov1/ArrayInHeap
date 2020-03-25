@@ -13,7 +13,7 @@ namespace arrayTests
 		int capacity;
 	public:
 
-		/// testArray is inited with capacity by default
+		/// testArray is inited with capacity by default (10)
 		EmptyArray() : capacity(10), testArray() {}
 		
 		TEST_METHOD(size_ExpectedSizeIsZero)
@@ -87,7 +87,6 @@ namespace arrayTests
 		}
 
 
-		// ? Following two methods to be in one test method ?
 		TEST_METHOD(push_back_afterPushBackExpectedSizeIsOne) {
 			testArray.push_back(rand());
 
@@ -150,9 +149,9 @@ namespace arrayTests
 	TEST_CLASS(ArrayWithFirstFiveNaturalNumbers) {
 	private:
 		array<int> testArray;
-		size_t capacity; /// capacity to init testArray
+		size_t capacity = 10; /// capacity to init testArray
 	public:
-		ArrayWithFirstFiveNaturalNumbers() : capacity(10), testArray(10) {
+		ArrayWithFirstFiveNaturalNumbers() : testArray(10) {
 			for (int i = 0; i <= 4; ++i)
 				testArray.push_back(i);
 		}
@@ -192,6 +191,9 @@ namespace arrayTests
 					Assert::Fail();
 			}
 		}
+
+		// TODO operatorBrackets_changing array elem
+		// TODO at_changing array elem
 
 		TEST_METHOD(isEmpty_ExpectedNotEmptyArray) {
 			Assert::IsFalse(testArray.isEmpty());
