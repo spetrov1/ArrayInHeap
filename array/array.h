@@ -2,18 +2,18 @@
 
 #include <cassert>
 
-
-
 /// Ordinary non-resizable array allocated in heap
+///
+/// T must be default constructible and copy assignable
 template <typename T>
 class array
 {
 private:
-	T* buffer; /// array storage
+	T* buffer = nullptr; /// array storage
 	
-	size_t usedCapacity; /// Number of pushed elements in array
+	size_t usedCapacity = 0; /// Number of pushed elements in array
 
-	size_t capacity; /// Allocated memory for buffer
+	size_t capacity = 0; /// Allocated memory for buffer
 
 	void copyBuffer(T* buffer, size_t size);
 	void deleteDynamicMemory();
@@ -50,7 +50,8 @@ public:
 /// 
 /// Used in operator= and copy constructor \n
 template <typename T>
-void array<T>::copyBuffer(T* _buffer, size_t _bufferSize) {
+void array<T>::copyBuffer(T* _buffer, size_t _bufferSize) noexcept (noexcept(T::operator=))
+{
 	for (size_t i = 0; i < _bufferSize; ++i)
 		buffer[i] = _buffer[i]; /// TODO ?
 }
@@ -58,7 +59,7 @@ void array<T>::copyBuffer(T* _buffer, size_t _bufferSize) {
 
 /// deletes storage of array
 template <typename T>
-void array<T>::deleteDynamicMemory() {
+void array<T>::deleteDynamicMemory() noexcept {
 	delete[] buffer;
 }
 
@@ -66,21 +67,37 @@ void array<T>::deleteDynamicMemory() {
 /// \param capacity to be used for storage. \n
 ///
 /// Used for memory allocation for the buffer
+///
+/// \throws std::bad_alloc if memory allocation fails
 template <typename T>
-array<T>::array(size_t _capacity) : capacity(_capacity), usedCapacity(0)
+array<T>::array(size_t _capacity)
 {
-	buffer = new T[capacity]; // TODO may throw
+	if (_capacity == 0)
+		throw std::invalid_argument();
+
+	buffer = new T[capacity];
 
 	capacity = _capacity;
 }
 
 
 /// Just an ordinary copy consturctor
+///
+/// \throws std::bad_alloc if memory allocation fails
+/// \throws X if T::operator= throws X while copying
 template <typename T>
-array<T>::array(const array& other) {
-	buffer = new T[other.capacity]; // TODO may throw
+array<T>::array(const array& other)
+{
+	buffer = new T[other.capacity];
 
-	copyBuffer(other.buffer, other.size());
+	try {
+		copyBuffer(other.buffer, other.size());
+	}
+	catch (...) {
+		delete[] buffer;
+		buffer = nullptr;
+		throw;
+	}
 
 	usedCapacity = other.usedCapacity;
 	capacity = other.capacity;
@@ -92,11 +109,16 @@ array<T>::array(const array& other) {
 /// \warning std::exception is thrown if (this.capacity < other.size)
 template <typename T>
 array<T>& array<T>::operator=(const array& other) {
+
+	//TODO drop this check
 	if (this->capacity < other.size()) {
 		throw std::exception();
 	}
 	if (this != &other) {
+		//TODO copy to a new buffer and free memory only if succesful
+		//     (strong exception safety guarantee)
 		copyBuffer(other.buffer, other.size());
+		
 		usedCapacity = other.usedCapacity;
 	}
 	return *this;
@@ -105,7 +127,7 @@ array<T>& array<T>::operator=(const array& other) {
 
 /// Deletes allocated memory for storage(buffer)
 template <typename T>
-array<T>::~array() {
+array<T>::~array() noexcept {
 	deleteDynamicMemory();
 }
 
@@ -122,14 +144,14 @@ void array<T>::fill(const T& initElem) {
 
 /// Checks whether array is empty
 template <typename T>
-inline bool array<T>::isEmpty() const {
+inline bool array<T>::isEmpty() const noexcept {
 	return usedCapacity == 0;
 }
 
 
 /// \return number of already pushed elements in the array
 template <typename T>
-inline size_t array<T>::size() const {
+inline size_t array<T>::size() const noexcept  {
 	return usedCapacity;
 }
 
@@ -188,7 +210,7 @@ inline const T& array<T>::back() const
 /// \return Reference to the element specified by index position
 /// \warning Passing invalid argument, the behaviour is undefined
 template<typename T>
-inline T& array<T>::operator[](size_t index)
+inline T& array<T>::operator[](size_t index) noexcept
 {
 	assert(index < usedCapacity);
 
@@ -201,7 +223,7 @@ inline T& array<T>::operator[](size_t index)
 /// \return Reference to the element specified by index position
 /// \warning Passing invalid argument, the behaviour is undefined
 template<typename T>
-inline const T& array<T>::operator[](size_t index) const
+inline const T& array<T>::operator[](size_t index) const noexcept
 {
 	assert(index < usedCapacity);
 
@@ -229,7 +251,7 @@ template<typename T>
 inline const T& array<T>::at(size_t index) const
 {
 	if (index >= size)
-		throw std::out_of_range();
+		throw std::out_of_range("There is no such element");
 	return buffer[index];
 }
 
@@ -238,12 +260,12 @@ inline const T& array<T>::at(size_t index) const
 /// \return True if for each i this[i] == other[i] \n
 /// this.capacity != other.capacity is allowed
 template<typename T>
-inline bool array<T>::operator==(const array& other) const
+inline bool array<T>::operator==(const array& other) const noexcept( noexcept(T::operator==) )
 {
 	if (usedCapacity != other.usedCapacity)
 		return false;
 	for (size_t i = 0; i < usedCapacity; ++i) {
-		if (buffer[i] != other.buffer[i]) // TODO may throw ?
+		if ( ! (buffer[i] == other.buffer[i]) ) // TODO may throw ?
 			return false;
 	}
 
