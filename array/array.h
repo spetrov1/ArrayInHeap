@@ -8,7 +8,7 @@
 template <typename T>
 class array
 {
-private:
+protected:
 	T* buffer; /// array storage
 	
 	size_t usedCapacity; /// Number of pushed elements in array
@@ -242,5 +242,81 @@ public:
 
 
 
+typedef int8_t byte;
+
+/// \param n < 8
+// ? Why not working if return byte(int8_t) or bool ?
+int getNthBit(byte num, uint8_t n) {
+	return (num >> n) & 1;
+}
 
 
+void printByte(byte x) {
+	unsigned int mask = 0x80;
+
+	while (mask > 0) {
+		std::cout << ((x & mask) ? 1 : 0);
+		mask = mask >> 1;
+	}
+	// std::cout << '\n';
+}
+
+
+// TODO int8_t --> uint8_t
+void setNthBit(byte& bitArray, uint8_t n) {
+	unsigned int mask = 1;
+	mask = mask << n;
+
+	bitArray = bitArray | mask;
+}
+
+
+// TODO int8_t --> uint8_t
+void dropNthBit(byte& bitArray, uint8_t n) {
+	unsigned int mask = 1;
+	mask = mask << n;
+	mask = ~mask;
+
+	bitArray = bitArray & mask;
+}
+
+
+// Not used in this project but just for practice
+// TODO template <typename T, size_t SIZE>
+template <typename T, size_t size>
+size_t getSize(T(&arr)[size]) {
+	return size;
+}
+
+
+template <>
+class array<bool> : public array<byte> {
+
+private:
+	// array<byte> data;
+
+public:
+
+	/// Allocate (capacity / 8) trying to use every bit of a byte
+	array(size_t capacity) : array<byte>(ceil(capacity / 8)) 
+	{
+		for (size_t i = 0; i < capacity; ++i)
+			buffer[i] = 0;
+	}
+
+	/// Adds element to the end of array \n
+	/// \param newElem to be inserted in array
+	/// \exception if container is full, exception is throwed
+	void push_back(const bool& newElem) {
+		if (usedCapacity == capacity)
+			throw std::exception();
+		int byteIndex = ceil(usedCapacity / 8);
+		int numberOfBitInByte = usedCapacity % 8;
+
+	}
+
+
+	bool& operator[](size_t index) {
+		// TODO
+	}
+};

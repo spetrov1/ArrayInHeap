@@ -6,19 +6,24 @@
 
 int main()
 {
-    array<int> arr(3);
+    byte a = 0x07;
+    printByte(a);
+    std::cout << std::endl;
 
-    arr.fill(1);
-    std::cout << arr.size();
+    dropNthBit(a, 0);
+    dropNthBit(a, 2);
+    printByte(a);
+    std::cout << std::endl;
+
+    setNthBit(a, 7);
+    printByte(a);
+    std::cout << std::endl;
+
+    std::cout << getNthBit(a, 7) << " " << getNthBit(a, 6);
+    std::cout << std::endl;
+
+
+    byte b = 0;
+    printByte(b);
+
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
