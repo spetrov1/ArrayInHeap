@@ -5,34 +5,16 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace arrayTests
 {
-	TEST_CLASS(ArrayWithZeroCapacity)
-	{
-	public:
-		TEST_METHOD(IfCapacityIsZeroTheConstructorThrows)
-		{
-			try {
-				array<int>(0);
-			}
-			catch (...) {
-				return;
-			}
-
-			Assert::Fail();
-		}
-	};
-
 	TEST_CLASS(EmptyArray)
 	{
 	private:
 		array<int> testArray;
-		int capacity;
 
+		int capacity;
 	public:
 
 		/// testArray is inited with capacity by default (10)
-		EmptyArray() : capacity(10), testArray()
-		{
-		}
+		EmptyArray() : capacity(10), testArray() {}
 		
 		TEST_METHOD(size_ExpectedSizeIsZero)
 		{
