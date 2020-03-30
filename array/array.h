@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-
+#include <iostream>
 
 
 /// Ordinary non-resizable array allocated in heap
@@ -120,6 +120,11 @@ public:
 		return usedCapacity == 0;
 	}
 
+	// TODO use it in the class, its new function
+	/// Checks if array is full
+	bool isFull() const {
+		return usedCapacity == capacity;
+	}
 
 	/// \return number of already pushed elements in the array
 	size_t size() const noexcept {
@@ -298,9 +303,10 @@ private:
 public:
 
 	/// Allocate (capacity / 8) trying to use every bit of a byte
-	array(size_t capacity) : array<byte>(ceil(capacity / 8)) 
+	array(size_t capacity) : array<byte>(ceil(capacity / 8.0)) 
 	{
-		for (size_t i = 0; i < capacity; ++i)
+		size_t numberOfBytesInArray = ceil(capacity / 8.0);
+		for (size_t i = 0; i < numberOfBytesInArray; ++i)
 			buffer[i] = 0;
 	}
 
@@ -308,15 +314,47 @@ public:
 	/// \param newElem to be inserted in array
 	/// \exception if container is full, exception is throwed
 	void push_back(const bool& newElem) {
-		if (usedCapacity == capacity)
+		if (isFull())
 			throw std::exception();
-		int byteIndex = ceil(usedCapacity / 8);
-		int numberOfBitInByte = usedCapacity % 8;
 
+		size_t byteIndex = usedCapacity / 8;
+		size_t numberOfBitInByte = usedCapacity % 8;
+
+		if (newElem == 1) // or true
+			setNthBit(buffer[byteIndex], numberOfBitInByte);
+		++usedCapacity;
 	}
 
+	// TODO bool operator[], e.g return not reference
 
-	bool& operator[](size_t index) {
+	/// Returns and removes last element
+	/// \return Reference to last element
+	/// \exception If there is no such element is throwed exception
+	bool& pop_back() {
 		// TODO
 	}
+
+
+	/// \param index - position of the element to return
+	/// \return Reference to the element specified by index position
+	/// \warning Passing invalid argument, the behaviour is undefined
+	byte& operator[](size_t index) noexcept {
+		// TODO use size_t instead of int
+		assert(index < usedCapacity);
+
+		int byteIndexInArray = index / 8;
+		int bitIndexInByte = index % 8;
+
+		// TODO how to return reference to the bit
+
+		return buffer[byteIndexInArray];
+	}
+
+	/// Checks whetere array is full with elements
+	bool isFull() const {
+		return (usedCapacity / 8) == capacity &&
+			usedCapacity % 8 == 0;
+	}
+
+
 };

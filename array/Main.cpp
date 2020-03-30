@@ -6,6 +6,16 @@
 
 int main()
 {
+
+    array<bool> boolArr(5);
+    boolArr.push_back(1);
+    boolArr.push_back(0);
+    boolArr.push_back(1);
+
+    // std::cout << boolArr.size() << "\n" << boolArr[0] << std::endl;
+    printByte(boolArr[0]);
+
+    /*
     byte a = 0x07;
     printByte(a);
     std::cout << std::endl;
@@ -25,5 +35,6 @@ int main()
 
     byte b = 0;
     printByte(b);
+    */
 
 }
