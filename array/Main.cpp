@@ -26,7 +26,7 @@ int main()
 
     std::cout << std::endl;
     for (int i = 0; i < 15; ++i)
-        a.pop_back().print();
+        std::cout << a.at(i);
 
     // bool b = a[15];
     // std::cout << std::endl << b << std::endl;

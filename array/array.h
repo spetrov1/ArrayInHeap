@@ -322,17 +322,25 @@ public:
 		return *this;
 	}
 
-	operator bool() {
+
+	// ASK if it has to be const
+	operator bool() const {
 		// TODO may have some problems
 		return getNthBit(data, num_of_bit);
 	}
 
-	// TODO operator << (std::ofstream)
+	friend std::ostream& operator<<(const std::ostream&, const ref_bit&);
 
 	void print() {
 		std::cout << getNthBit(data, num_of_bit) << std::endl;
 	}
 };
+
+std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
+	os << (bool)bit << std::endl;
+
+	return os;
+}
 
 
 template <>
@@ -366,7 +374,6 @@ public:
 		++usedCapacity;
 	}
 
-	// TODO bool operator[], e.g return not reference
 
 	/// Returns and removes last element
 	/// \return Reference to last element
@@ -382,8 +389,10 @@ public:
 	}
 
 
-	/// \param index - position of the element to return
-	/// \return Reference to the element specified by index position by ref_bit struct
+	// TODO for constant objects
+	/// \param index - position of the element(bit) to return
+	/// \return ref_bit struct which is implemented to be reference 
+	///		to the queried bit specified by index parameter
 	/// \warning Passing invalid argument, the behaviour is undefined
 	ref_bit operator[](size_t index) noexcept {
 		// TODO use size_t instead of int
@@ -395,11 +404,26 @@ public:
 		return ref_bit(buffer[byteIndexInArray], bitIndexInByte);
 	}
 
+	/// \return Reference to the specified element by index position
+	/// \exception Accessing index which is out of range of array container, 
+	///               exception out_of_range is throwed
+	ref_bit at(size_t index) {
+		if (index >= usedCapacity)
+			throw std::out_of_range("Queried index in bool array is invalid");
+		
+		return this->operator[](index);
+	}
+
+
 	/// Checks whetere array is full with elements
 	bool isFull() const {
 		return (usedCapacity / 8) == capacity &&
 			usedCapacity % 8 == 0;
 	}
 
+
+	// TODO back(Constant and non-constant)
+	// TODO operator[] (Constant)
+	// TODO at(Constant and non-constant)
 
 };
