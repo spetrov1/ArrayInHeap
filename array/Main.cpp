@@ -22,9 +22,15 @@ int main()
     }
     
     a.fill(1);
+    for (int i = 0; i < 15; ++i) {
+        std::cout << a[i];
+        a[i] = false;
+    }
 
     for (int i = 0; i < 15; ++i)
         std::cout << a[i];
+
+
 
     // bool b = a[15];
     // std::cout << std::endl << b << std::endl;

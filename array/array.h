@@ -286,6 +286,7 @@ void dropNthBit(byte& bitArray, uint8_t n) {
 }
 
 
+// ASK
 // Not used in this project but just for practice
 // TODO template <typename T, size_t SIZE>
 template <typename T, size_t size>
@@ -295,42 +296,50 @@ size_t getSize(T(&arr)[size]) {
 
 
 
-/// Struct used as a reference ot a bit
+/// Struct used as a reference to a bit
 /// It is used in array<bool> to ref difference bits
-/// 
 struct ref_bit {
 private:
-	uint8_t num_of_bit;
-	byte data;
+	uint8_t num_of_bit; /// Number of the bit in the byte(data)
+	byte* data; /// The byte in which referenced bit is
 
 public:
-	ref_bit(byte& _data, uint8_t num) : data(_data), num_of_bit(num) {}
 
+	ref_bit(byte& _data, uint8_t& num) : data(&_data), num_of_bit(num) {}
+
+
+
+	/// If bit is 0, then it is fliped to 1
+	/// If bit is 1, then it is fliped to 0
 	void flip() {
-		if (getNthBit(data, num_of_bit) == 1) {
-			dropNthBit(data, num_of_bit);
+		if (getNthBit(*data, num_of_bit)) {
+			dropNthBit(*data, num_of_bit);
 		}
 		else {
-			setNthBit(data, num_of_bit);
+			setNthBit(*data, num_of_bit);
 		}
 	}
 
+
+	/// Make possible to do sth like :
+	///		refBit = true;
 	ref_bit& operator=(const bool& other) {
 		if (other) {
-			setNthBit(data, num_of_bit);
+			setNthBit(*data, num_of_bit);
 		}
 		else {
-			dropNthBit(data, num_of_bit);
+			dropNthBit(*data, num_of_bit);
 		}
 
 		return *this;
 	}
 
 
+
 	// ASK if it has to be const
 	operator bool() const {
 		// TODO may have some problems
-		return getNthBit(data, num_of_bit);
+		return getNthBit(*data, num_of_bit);
 	}
 
 	friend std::ostream& operator<<(const std::ostream&, const ref_bit&);
@@ -346,10 +355,6 @@ std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
 
 template <>
 class array<bool> : public array<byte> {
-
-private:
-	// array<byte> data;
-
 public:
 
 	/// Allocate (capacity / 8) trying to use every bit of a byte
@@ -410,8 +415,8 @@ public:
 		// TODO use size_t instead of int
 		assert(index < usedCapacity);
 
-		int byteIndexInArray = index / 8;
-		int bitIndexInByte = index % 8;
+		uint8_t byteIndexInArray = index / 8;
+		uint8_t bitIndexInByte = index % 8;
 
 		return ref_bit(buffer[byteIndexInArray], bitIndexInByte);
 	}
