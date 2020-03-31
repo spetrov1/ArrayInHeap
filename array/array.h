@@ -337,15 +337,21 @@ public:
 
 
 	// ASK if it has to be const
+	/// Casting to bool function
 	operator bool() const {
 		// TODO may have some problems
 		return getNthBit(*data, num_of_bit);
 	}
 
+
+	/// Make possible to do: 
+	///		std::cout << refBit;
 	friend std::ostream& operator<<(const std::ostream&, const ref_bit&);
 
 };
 
+
+/// Used in ref_bit structure as friend function
 std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
 	os << (bool)bit << std::endl;
 
@@ -353,6 +359,9 @@ std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
 }
 
 
+
+/// Specialization of array
+/// Bool version of template array
 template <>
 class array<bool> : public array<byte> {
 public:
@@ -366,12 +375,19 @@ public:
 	}
 
 
-	void fill(const bool& elemToFillWith) {
+
+	// ASK Is there have to be noexcept
+	//		Because push_back may throw but the way we implemented the function
+	//			makes it imposible	
+	/// Fill all the capacity in array with the given parameter
+	/// \param elemToFillWith is the element used to fill the array with
+	void fill(const bool& elemToFillWith) noexcept {
 		usedCapacity = 0; // clear out array
 		while (!isFull()) {
 			push_back(elemToFillWith);
 		}
 	}
+
 
 
 	/// Adds element to the end of array \n
@@ -406,7 +422,6 @@ public:
 
 
 
-	// TODO for constant objects
 	/// \param index - position of the element(bit) to return
 	/// \return ref_bit struct which is implemented to be reference 
 	///		to the queried bit specified by index parameter
