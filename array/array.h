@@ -315,7 +315,7 @@ public:
 	/// \exception if container is full, exception is throwed
 	void push_back(const bool& newElem) {
 		if (isFull())
-			throw std::exception();
+			throw std::exception("Array is full !!!");
 
 		size_t byteIndex = usedCapacity / 8;
 		size_t numberOfBitInByte = usedCapacity % 8;

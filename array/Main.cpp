@@ -4,16 +4,36 @@
 #include <iostream>
 #include "array.h"
 
+
+#define CONCAT(a, b) a ## b
+
 int main()
 {
+    int ab = 15;
 
+    std::cout << CONCAT(a, b) << std::endl;
+
+
+
+    /*
     array<bool> boolArr(5);
     boolArr.push_back(1);
     boolArr.push_back(0);
     boolArr.push_back(1);
+    boolArr.push_back(1);
+    boolArr.push_back(1);
+    boolArr.push_back(1);
+    boolArr.push_back(1);
+    boolArr.push_back(1);
+    // array is full
+    
+
+    // boolArr.push_back(1);
 
     // std::cout << boolArr.size() << "\n" << boolArr[0] << std::endl;
     printByte(boolArr[0]);
+
+    */
 
     /*
     byte a = 0x07;
