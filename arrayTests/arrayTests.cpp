@@ -3,6 +3,8 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#define CONCAT(a, b) a ## b
+
 namespace arrayTests
 {
 	TEST_CLASS(EmptyArray)
@@ -31,6 +33,7 @@ namespace arrayTests
 			Assert::AreEqual((size_t)capacity, testArray.size());
 		}
 
+		// Only for numeric types
 		TEST_METHOD(fill_MaintainsCorrectElementsInserted) {
 			int elemToFillWith = 6;
 			testArray.fill(elemToFillWith);
@@ -45,6 +48,7 @@ namespace arrayTests
 			Assert::IsTrue(testArray == testArray);
 		}
 
+		// Only for numeric types
 		TEST_METHOD(operatorEquality_CompareDifferentObjectsExpectedFalse) {
 			array<int> otherArray;
 			otherArray.fill(1);
@@ -72,6 +76,7 @@ namespace arrayTests
 			Assert::IsTrue(otherArray == testArray);
 		}
 
+		// Only for numeric types
 		TEST_METHOD(operatorEquals_NoSpaceInArrayForOtherArrayElemsExpectedException) {
 			array<int> otherArray(12);
 			otherArray.fill(1);
@@ -86,13 +91,14 @@ namespace arrayTests
 
 		}
 
-
+		// Only for int
 		TEST_METHOD(push_back_afterPushBackExpectedSizeIsOne) {
 			testArray.push_back(rand());
 
 			Assert::AreEqual((size_t)1, testArray.size());
 		}
 
+		// Only for int
 		TEST_METHOD(push_back_afterPushBackCorrectElementIsInserted) {
 			int newElem = rand();
 			testArray.push_back(newElem);

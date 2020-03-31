@@ -294,6 +294,47 @@ size_t getSize(T(&arr)[size]) {
 }
 
 
+struct ref_bit {
+private:
+	uint8_t num_of_bit;
+	byte data;
+
+public:
+	ref_bit(byte& _data, uint8_t num) : data(_data), num_of_bit(num) {}
+
+	void flip() {
+		if (getNthBit(data, num_of_bit) == 1) {
+			dropNthBit(data, num_of_bit);
+		}
+		else {
+			setNthBit(data, num_of_bit);
+		}
+	}
+
+	ref_bit& operator=(const bool& other) {
+		if (other) {
+			setNthBit(data, num_of_bit);
+		}
+		else {
+			dropNthBit(data, num_of_bit);
+		}
+
+		return *this;
+	}
+
+	operator bool() {
+		// TODO may have some problems
+		return getNthBit(data, num_of_bit);
+	}
+
+	// TODO operator << (std::ofstream)
+
+	void print() {
+		std::cout << getNthBit(data, num_of_bit) << std::endl;
+	}
+};
+
+
 template <>
 class array<bool> : public array<byte> {
 
@@ -303,7 +344,7 @@ private:
 public:
 
 	/// Allocate (capacity / 8) trying to use every bit of a byte
-	array(size_t capacity) : array<byte>(ceil(capacity / 8.0)) 
+	array(size_t capacity = 10) : array<byte>(ceil(capacity / 8.0)) 
 	{
 		size_t numberOfBytesInArray = ceil(capacity / 8.0);
 		for (size_t i = 0; i < numberOfBytesInArray; ++i)
@@ -330,24 +371,28 @@ public:
 	/// Returns and removes last element
 	/// \return Reference to last element
 	/// \exception If there is no such element is throwed exception
-	bool& pop_back() {
-		// TODO
+	ref_bit pop_back() {
+		if (isEmpty())
+			throw std::exception();
+		size_t lastElemIndex = usedCapacity - 1;
+		ref_bit elemToReturn = this->operator[](lastElemIndex);
+		--usedCapacity;
+
+		return elemToReturn;
 	}
 
 
 	/// \param index - position of the element to return
-	/// \return Reference to the element specified by index position
+	/// \return Reference to the element specified by index position by ref_bit struct
 	/// \warning Passing invalid argument, the behaviour is undefined
-	byte& operator[](size_t index) noexcept {
+	ref_bit operator[](size_t index) noexcept {
 		// TODO use size_t instead of int
 		assert(index < usedCapacity);
 
 		int byteIndexInArray = index / 8;
 		int bitIndexInByte = index % 8;
 
-		// TODO how to return reference to the bit
-
-		return buffer[byteIndexInArray];
+		return ref_bit(buffer[byteIndexInArray], bitIndexInByte);
 	}
 
 	/// Checks whetere array is full with elements

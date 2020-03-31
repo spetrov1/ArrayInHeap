@@ -6,13 +6,36 @@
 
 
 #define CONCAT(a, b) a ## b
+#define MACRO_INT int
+
+#define alias = a // TODO trying to make alias
 
 int main()
 {
-    int ab = 15;
 
-    std::cout << CONCAT(a, b) << std::endl;
+    array<bool> a;
+    for (int i = 0; i <= 15; ++i) {
+        if (i % 2 == 0)
+            a.push_back(1);
+        else
+            a.push_back(0);
+    }
+    
+    // for (int i = 0; i < 15; ++i)
+    //     a[i].print();
 
+    std::cout << std::endl;
+    for (int i = 0; i < 15; ++i)
+        a.pop_back().print();
+
+    // bool b = a[15];
+    // std::cout << std::endl << b << std::endl;
+
+    // MACRO_INT ab = 15;
+
+    // std::cout << CONCAT(a, b) << std::endl;
+
+    // std::cout << CONCAT(haha, b) << std::endl;
 
 
     /*
