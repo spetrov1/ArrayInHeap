@@ -294,6 +294,10 @@ size_t getSize(T(&arr)[size]) {
 }
 
 
+
+/// Struct used as a reference ot a bit
+/// It is used in array<bool> to ref difference bits
+/// 
 struct ref_bit {
 private:
 	uint8_t num_of_bit;
@@ -331,9 +335,6 @@ public:
 
 	friend std::ostream& operator<<(const std::ostream&, const ref_bit&);
 
-	void print() {
-		std::cout << getNthBit(data, num_of_bit) << std::endl;
-	}
 };
 
 std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
@@ -359,6 +360,15 @@ public:
 			buffer[i] = 0;
 	}
 
+
+	void fill(const bool& elemToFillWith) {
+		usedCapacity = 0; // clear out array
+		while (!isFull()) {
+			push_back(elemToFillWith);
+		}
+	}
+
+
 	/// Adds element to the end of array \n
 	/// \param newElem to be inserted in array
 	/// \exception if container is full, exception is throwed
@@ -375,6 +385,7 @@ public:
 	}
 
 
+
 	/// Returns and removes last element
 	/// \return Reference to last element
 	/// \exception If there is no such element is throwed exception
@@ -387,6 +398,7 @@ public:
 
 		return elemToReturn;
 	}
+
 
 
 	// TODO for constant objects
@@ -404,6 +416,8 @@ public:
 		return ref_bit(buffer[byteIndexInArray], bitIndexInByte);
 	}
 
+
+
 	/// \return Reference to the specified element by index position
 	/// \exception Accessing index which is out of range of array container, 
 	///               exception out_of_range is throwed
@@ -420,6 +434,8 @@ public:
 		return (usedCapacity / 8) == capacity &&
 			usedCapacity % 8 == 0;
 	}
+
+
 
 
 	// TODO back(Constant and non-constant)

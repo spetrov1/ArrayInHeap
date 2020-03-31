@@ -21,12 +21,10 @@ int main()
             a.push_back(0);
     }
     
-    // for (int i = 0; i < 15; ++i)
-    //     a[i].print();
+    a.fill(1);
 
-    std::cout << std::endl;
     for (int i = 0; i < 15; ++i)
-        std::cout << a.at(i);
+        std::cout << a[i];
 
     // bool b = a[15];
     // std::cout << std::endl << b << std::endl;
