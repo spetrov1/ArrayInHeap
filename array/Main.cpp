@@ -5,14 +5,12 @@
 #include "array.h"
 
 
-#define CONCAT(a, b) a ## b
-#define MACRO_INT int
-
-#define alias = a // TODO trying to make alias
 
 int main()
 {
 
+
+    /*
     array<bool> a;
     for (int i = 0; i <= 15; ++i) {
         if (i % 2 == 0)
@@ -29,7 +27,8 @@ int main()
 
     for (int i = 0; i < 15; ++i)
         std::cout << a[i];
-
+    
+    */
 
 
     // bool b = a[15];

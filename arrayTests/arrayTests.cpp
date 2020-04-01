@@ -3,161 +3,34 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-#define CONCAT(a, b) a ## b
 
 namespace arrayTests
 {
-	TEST_CLASS(EmptyArray)
-	{
+
+	#define TYPE_TO_TEST int
+	#include "TemplateTests.cpp"
+	#undef TYPE_TO_TEST
+
+	#define TYPE_TO_TEST float
+	#include "TemplateTests.cpp"
+	#undef TYPE_TO_TEST
+
+	// TODO not all tests work correctly
+	#define TYPE_TO_TEST bool
+	#include "TemplateTests.cpp"
+	#undef TYPE_TO_TEST
+	
+	
+
+	TEST_CLASS(INT_ArrayWithFirstFiveNaturalNumbers) {
 	private:
 		array<int> testArray;
 
-		int capacity;
-	public:
-
-		/// testArray is inited with capacity by default (10)
-		EmptyArray() : capacity(10), testArray() {}
-		
-		TEST_METHOD(size_ExpectedSizeIsZero)
-		{
-			Assert::AreEqual(testArray.size(), (size_t)0);
-		}
-
-		TEST_METHOD(empty_ExpectedEmptyArray) {
-			Assert::IsTrue(testArray.isEmpty());
-		}
-
-		TEST_METHOD(fill_FillArrayExpectedSizeIs10) {
-			testArray.fill(1);
-
-			Assert::AreEqual((size_t)capacity, testArray.size());
-		}
-
-		// Only for numeric types
-		TEST_METHOD(fill_MaintainsCorrectElementsInserted) {
-			int elemToFillWith = 6;
-			testArray.fill(elemToFillWith);
-
-			for (int i = 0; i < capacity; ++i) {
-				if (testArray[i] != elemToFillWith)
-					Assert::Fail();
-			}
-		}
-
-		TEST_METHOD(operatorEquality_CompareToSameTestArrayExpectedTrue) {
-			Assert::IsTrue(testArray == testArray);
-		}
-
-		// Only for numeric types
-		TEST_METHOD(operatorEquality_CompareDifferentObjectsExpectedFalse) {
-			array<int> otherArray;
-			otherArray.fill(1);
-
-			Assert::IsFalse(testArray == otherArray);
-		}
-
-		TEST_METHOD(operatorEquality_CompareObjectsWithJustDifferentCapacityExpectedTrue) {
-			int otherCapacity = 100;
-			array<int> otherArray(otherCapacity);
-
-			Assert::IsTrue(testArray == otherArray);
-		}
-	
-		TEST_METHOD(copyConstructor_WorkingAsExpected) {
-			array<int> otherArray = testArray;
-
-			Assert::IsTrue(testArray == otherArray);
-		}
-	
-		TEST_METHOD(operatorEquals_WorkingAsExpected) {
-			array<int> otherArray;
-			otherArray = testArray;
-
-			Assert::IsTrue(otherArray == testArray);
-		}
-
-		// Only for numeric types
-		TEST_METHOD(operatorEquals_NoSpaceInArrayForOtherArrayElemsExpectedException) {
-			array<int> otherArray(12);
-			otherArray.fill(1);
-
-			try {
-				testArray = otherArray;
-				Assert::Fail();
-			}
-			catch (std::exception) {
-				
-			}
-
-		}
-
-		// Only for int
-		TEST_METHOD(push_back_afterPushBackExpectedSizeIsOne) {
-			testArray.push_back(rand());
-
-			Assert::AreEqual((size_t)1, testArray.size());
-		}
-
-		// Only for int
-		TEST_METHOD(push_back_afterPushBackCorrectElementIsInserted) {
-			int newElem = rand();
-			testArray.push_back(newElem);
-
-			Assert::AreEqual(newElem, testArray[0]);
-		}
-
-		TEST_METHOD(pop_back_invokingPopBackOnEmptyArrayExceptionIsExpected) {
-			try {
-				testArray.pop_back();
-				Assert::Fail();
-			}
-			catch (std::exception) {
-
-			}
-		}
-
-		TEST_METHOD(back_invokingBackOnEmptyArrayExceptionIsExpected) {
-			try {
-				testArray.back();
-				Assert::Fail();
-			}
-			catch (std::exception) {
-
-			}
-		}
-
-		TEST_METHOD(at_invokingAtOnEmptyExceptionOutOfRangeIsExpected) {
-			for (int i = 0; i < 10; ++i) {
-				try {
-					testArray.at(i);
-					Assert::Fail();
-				}
-				catch (std::out_of_range) {
-
-				}
-			}
-		}
-
-		TEST_METHOD(push_back_PushBackToFullArrayExceptionIsExpected) {
-			testArray.fill(1);
-			try {
-				testArray.push_back(1);
-				Assert::Fail();
-			}
-			catch (std::exception) {
-
-			}
-		}
-
-	};
-
-
-	TEST_CLASS(ArrayWithFirstFiveNaturalNumbers) {
-	private:
-		array<int> testArray;
 		size_t capacity = 10; /// capacity to init testArray
+
 	public:
-		ArrayWithFirstFiveNaturalNumbers() : testArray(10) {
+
+		INT_ArrayWithFirstFiveNaturalNumbers() : testArray(10) {
 			for (int i = 0; i <= 4; ++i)
 				testArray.push_back(i);
 		}
@@ -264,4 +137,104 @@ namespace arrayTests
 		}
 	};
 	
+	
+	
+	TEST_CLASS(INT_EmptyArrayAdditionalTests)
+	{
+	private:
+		array<int> testArray;
+
+		int capacity;
+	public:
+
+		/// testArray is inited with capacity by default (10)
+		INT_EmptyArrayAdditionalTests() : capacity(10), testArray() {}
+
+
+
+		TEST_METHOD(fill_MaintainsCorrectElementsInserted) {
+			int elemToFillWith = 6;
+			testArray.fill(elemToFillWith);
+
+			for (int i = 0; i < capacity; ++i) {
+				if (testArray[i] != elemToFillWith)
+					Assert::Fail();
+			}
+		}
+
+
+		
+		TEST_METHOD(operatorEquality_CompareDifferentObjectsExpectedFalse) {
+			array<int> otherArray;
+			otherArray.fill(1);
+
+			Assert::IsFalse(testArray == otherArray);
+		}
+
+
+		
+		TEST_METHOD(operatorEquals_NoSpaceInArrayForOtherArrayElemsExpectedException) {
+			array<int> otherArray(12);
+			otherArray.fill(1.0);
+
+			try {
+				testArray = otherArray;
+				Assert::Fail();
+			}
+			catch (std::exception) {
+
+			}
+
+		}
+
+		
+		TEST_METHOD(push_back_afterPushBackExpectedSizeIsOne) {
+			testArray.push_back(rand());
+
+			Assert::AreEqual((size_t)1, testArray.size());
+		}
+
+
+		
+		TEST_METHOD(push_back_afterPushBackCorrectElementIsInserted) {
+			int newElem = rand();
+			testArray.push_back(newElem);
+
+			Assert::AreEqual(newElem, testArray[0]);
+		}
+
+	};
+
+
+	
+	TEST_CLASS(BOOL_EmptyArrayAdditinalTests) {
+	private:
+		array<bool> testArray;
+
+		int capacity = 10;
+
+	public:
+
+		TEST_METHOD(push_back_ExpectedSizeIsOne) {
+			testArray.push_back(true);
+
+			Assert::AreEqual((size_t)1, testArray.size());
+		}
+
+
+		TEST_METHOD(push_back_ExpectedValueIsInArray) {
+			testArray.push_back(true);
+
+			Assert::AreEqual(true, (bool)testArray[0]);
+		}
+
+
+
+
+	};
+
+
 }
+
+
+

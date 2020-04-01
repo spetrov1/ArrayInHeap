@@ -115,10 +115,13 @@ public:
 	}
 
 
+
 	/// Checks whether array is empty
 	bool isEmpty() const noexcept {
 		return usedCapacity == 0;
 	}
+
+
 
 	// TODO use it in the class, its new function
 	/// Checks if array is full
@@ -126,11 +129,14 @@ public:
 		return usedCapacity == capacity;
 	}
 
+
+
 	/// \return number of already pushed elements in the array
 	size_t size() const noexcept {
 		return usedCapacity;
 	}
 	
+
 	
 	/// Adds element to the end of array \n
 	/// \param newElem to be inserted in array
@@ -144,6 +150,7 @@ public:
 	}
 
 
+
 	/// Returns and removes last element
 	/// \return Reference to last element
 	/// \exception If there is no such element is throwed exception
@@ -153,6 +160,7 @@ public:
 			throw std::exception();
 		return buffer[--usedCapacity];
 	}
+
 
 
 	/// \return Reference to the last element
@@ -166,6 +174,7 @@ public:
 	}
 
 
+
 	/// Working for constant instances of array
 	/// \return Reference to the last element
 	///
@@ -176,6 +185,7 @@ public:
 			throw std::exception();
 		return buffer[usedCapacity - 1];
 	}
+
 
 
 	/// \param index - position of the element to return
@@ -296,6 +306,7 @@ size_t getSize(T(&arr)[size]) {
 
 
 
+// TODO move to other .h file
 /// Struct used as a reference to a bit
 /// It is used in array<bool> to ref difference bits
 struct ref_bit {
@@ -305,6 +316,8 @@ private:
 
 public:
 
+	// TODO maybe it is not necessary
+	// TODO default constructor will do the same
 	ref_bit(byte& _data, uint8_t& num) : data(&_data), num_of_bit(num) {}
 
 
@@ -321,6 +334,7 @@ public:
 	}
 
 
+	// TODO return ref_bit& or bool ?
 	/// Make possible to do sth like :
 	///		refBit = true;
 	ref_bit& operator=(const bool& other) {
@@ -364,6 +378,9 @@ std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
 /// Bool version of template array
 template <>
 class array<bool> : public array<byte> {
+
+	// TODO save actual capacity, not ceil(capacity / 8.0)
+
 public:
 
 	/// Allocate (capacity / 8) trying to use every bit of a byte
