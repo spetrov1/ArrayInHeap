@@ -4,9 +4,6 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
-namespace arrayTests
-{
-
 	#define TYPE_TO_TEST int
 	#include "TemplateTests.cpp"
 	#undef TYPE_TO_TEST
@@ -209,7 +206,7 @@ namespace arrayTests
 	
 	TEST_CLASS(BOOL_EmptyArrayAdditinalTests) {
 	private:
-		array<bool> testArray;
+		array<bool> testArray; // default inited with capacity = 10
 
 		int capacity = 10;
 
@@ -234,7 +231,89 @@ namespace arrayTests
 	};
 
 
-}
+
+	TEST_CLASS(BOOL_NotEmptyArrayAdditionalTests) {
+
+	private:
+		array<bool> testArray; /// Array used for testing
+
+		int capacity; /// Capacity of the array using for testing
+
+	public:
+
+		/// testArray default inited with capacity = 10
+		BOOL_NotEmptyArrayAdditionalTests() : capacity(10), testArray() {
+			for (int i = 0; i < 9; ++i) {
+				if (i % 2 == 0)
+					testArray.push_back(true);
+				else
+					testArray.push_back(false);
+			}
+
+		}
+
+		TEST_METHOD(size_ExpectedSizeIs9) {
+			Assert::AreEqual((size_t)9, testArray.size());
+		}
+
+		TEST_METHOD(empty_ExpectedNotEmpty) {
+			Assert::IsFalse(testArray.isEmpty());
+		}
+
+		TEST_METHOD(operatorBrackets_ChangingValueOfArrayElement) {
+			// testArray[0] true until now
+			testArray[0] = false;
+
+			Assert::IsFalse(testArray[0]);
+		}
+
+
+		TEST_METHOD(push_back_ExpectedSizeIs10) {
+			testArray.push_back(true);
+			Assert::AreEqual((size_t)10, testArray.size());
+		}
+
+
+		TEST_METHOD(push_back_CorrectElemIsInArray) {
+			testArray.push_back(true);
+			Assert::AreEqual(true, (bool)testArray.back());
+		}
+
+
+		TEST_METHOD(pop_back_ExpectedSizeIsEight) {
+			testArray.pop_back();
+
+			Assert::AreEqual((size_t)8, testArray.size());
+		}
+
+
+		TEST_METHOD(pop_back_ExpectedElementIsReturned) {
+			bool expectedValue = true;
+			
+			Assert::AreEqual(expectedValue, (bool)testArray.pop_back());
+		}
+
+
+		TEST_METHOD(back_ExpectedElemIsReturned) {
+			bool expectedValue = true;
+
+			Assert::AreEqual(expectedValue, (bool)testArray.back());
+		}
+
+
+		TEST_METHOD(back_ChangeValueByReturnedReferenceExpectedFalse) {
+			testArray.back() = false;
+
+			Assert::AreEqual(false, (bool)testArray.back());
+		}
+		TEST_METHOD(back_ChangeValueByReturnedReferenceExpectedTrue) {
+			testArray.back() = true;
+
+			Assert::AreEqual(true, (bool)testArray.back());
+		}
+
+	};
 
 
 
+	// TODO Tests when array isFull

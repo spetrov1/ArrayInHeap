@@ -8,7 +8,15 @@
 
 int main()
 {
+    array<bool> b;
+    b.push_back(true);
+    b.push_back(true);
 
+    std::cout << b[0] << b[1];
+
+    b[0] = b[1] = false;
+    std::cout << b[0] << b[1];
+    
 
     /*
     array<bool> a;

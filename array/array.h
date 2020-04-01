@@ -2,6 +2,10 @@
 
 #include <cassert>
 #include <iostream>
+#include "ref_bit.h"
+
+// ASK
+// typedef uint8_t byte
 
 
 /// Ordinary non-resizable array allocated in heap
@@ -106,10 +110,11 @@ public:
 
 	/// Fill the container with the specified value initElem \n
 	/// \param initElem - the value to assign to all the elements
+	/// \throws X if T::operator= throws X while copying
 	void fill(const T& initElem)
 	{
 		for (size_t i = 0; i < capacity; ++i)
-			buffer[i] = initElem; // TODO may throw ?
+			buffer[i] = initElem;
 
 		usedCapacity = capacity;
 	}
@@ -123,7 +128,6 @@ public:
 
 
 
-	// TODO use it in the class, its new function
 	/// Checks if array is full
 	bool isFull() const {
 		return usedCapacity == capacity;
@@ -143,7 +147,7 @@ public:
 	/// \exception if container is full, exception is throwed
 	void push_back(const T& newElem)
 	{
-		if (usedCapacity == capacity)
+		if (isFull())
 			throw std::exception();
 
 		buffer[usedCapacity++] = newElem;
@@ -241,12 +245,13 @@ public:
 	/// \param other - array to compare to
 	/// \return True if for each i this[i] == other[i] \n
 	/// this.capacity != other.capacity is allowed
+	/// \throws X if T::operator== throws X while comparing
 	bool operator== (const array& other) const
 	{
 		if (usedCapacity != other.usedCapacity)
 			return false;
 		for (size_t i = 0; i < usedCapacity; ++i) {
-			if (buffer[i] != other.buffer[i]) // TODO may throw ?
+			if (! (buffer[i] == other.buffer[i]) ) // may throw
 				return false;
 		}
 
@@ -257,138 +262,22 @@ public:
 
 
 
-typedef int8_t byte;
-
-/// \param n < 8
-// ? Why not working if return byte(int8_t) or bool ?
-int getNthBit(byte num, uint8_t n) {
-	return (num >> n) & 1;
-}
-
-
-void printByte(byte x) {
-	unsigned int mask = 0x80;
-
-	while (mask > 0) {
-		std::cout << ((x & mask) ? 1 : 0);
-		mask = mask >> 1;
-	}
-	// std::cout << '\n';
-}
-
-
-// TODO int8_t --> uint8_t
-void setNthBit(byte& bitArray, uint8_t n) {
-	unsigned int mask = 1;
-	mask = mask << n;
-
-	bitArray = bitArray | mask;
-}
-
-
-// TODO int8_t --> uint8_t
-void dropNthBit(byte& bitArray, uint8_t n) {
-	unsigned int mask = 1;
-	mask = mask << n;
-	mask = ~mask;
-
-	bitArray = bitArray & mask;
-}
-
-
-// ASK
-// Not used in this project but just for practice
-// TODO template <typename T, size_t SIZE>
-template <typename T, size_t size>
-size_t getSize(T(&arr)[size]) {
-	return size;
-}
-
-
-
-// TODO move to other .h file
-/// Struct used as a reference to a bit
-/// It is used in array<bool> to ref difference bits
-struct ref_bit {
-private:
-	uint8_t num_of_bit; /// Number of the bit in the byte(data)
-	byte* data; /// The byte in which referenced bit is
-
-public:
-
-	// TODO maybe it is not necessary
-	// TODO default constructor will do the same
-	ref_bit(byte& _data, uint8_t& num) : data(&_data), num_of_bit(num) {}
-
-
-
-	/// If bit is 0, then it is fliped to 1
-	/// If bit is 1, then it is fliped to 0
-	void flip() {
-		if (getNthBit(*data, num_of_bit)) {
-			dropNthBit(*data, num_of_bit);
-		}
-		else {
-			setNthBit(*data, num_of_bit);
-		}
-	}
-
-
-	// TODO return ref_bit& or bool ?
-	/// Make possible to do sth like :
-	///		refBit = true;
-	ref_bit& operator=(const bool& other) {
-		if (other) {
-			setNthBit(*data, num_of_bit);
-		}
-		else {
-			dropNthBit(*data, num_of_bit);
-		}
-
-		return *this;
-	}
-
-
-
-	// ASK if it has to be const
-	/// Casting to bool function
-	operator bool() const {
-		// TODO may have some problems
-		return getNthBit(*data, num_of_bit);
-	}
-
-
-	/// Make possible to do: 
-	///		std::cout << refBit;
-	friend std::ostream& operator<<(const std::ostream&, const ref_bit&);
-
-};
-
-
-/// Used in ref_bit structure as friend function
-std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
-	os << (bool)bit << std::endl;
-
-	return os;
-}
-
-
 
 /// Specialization of array
 /// Bool version of template array
 template <>
 class array<bool> : public array<byte> {
 
-	// TODO save actual capacity, not ceil(capacity / 8.0)
-
 public:
 
 	/// Allocate (capacity / 8) trying to use every bit of a byte
-	array(size_t capacity = 10) : array<byte>(ceil(capacity / 8.0)) 
+	array(size_t _capacity = 10) : 
+		array<byte>(ceil(_capacity / 8.0)) /// allocating appropriate number of bytes
 	{
-		size_t numberOfBytesInArray = ceil(capacity / 8.0);
+		size_t numberOfBytesInArray = ceil(_capacity / 8.0);
 		for (size_t i = 0; i < numberOfBytesInArray; ++i)
 			buffer[i] = 0;
+		capacity = _capacity;
 	}
 
 
@@ -438,16 +327,27 @@ public:
 	}
 
 
+	/// \return Reference to the last element
+	///
+	/// \exception If there is no such element, exception is throwed
+	ref_bit back() {
+		if (isEmpty())
+			throw std::exception();
+		size_t lastElemIndex = usedCapacity - 1;
+
+		return operator[](lastElemIndex);
+	}
+
+
 
 	/// \param index - position of the element(bit) to return
 	/// \return ref_bit struct which is implemented to be reference 
 	///		to the queried bit specified by index parameter
 	/// \warning Passing invalid argument, the behaviour is undefined
 	ref_bit operator[](size_t index) noexcept {
-		// TODO use size_t instead of int
 		assert(index < usedCapacity);
 
-		uint8_t byteIndexInArray = index / 8;
+		size_t byteIndexInArray = index / 8;
 		uint8_t bitIndexInByte = index % 8;
 
 		return ref_bit(buffer[byteIndexInArray], bitIndexInByte);
@@ -465,12 +365,6 @@ public:
 		return this->operator[](index);
 	}
 
-
-	/// Checks whetere array is full with elements
-	bool isFull() const {
-		return (usedCapacity / 8) == capacity &&
-			usedCapacity % 8 == 0;
-	}
 
 
 
