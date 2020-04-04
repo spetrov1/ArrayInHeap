@@ -5,11 +5,11 @@
 
 typedef uint8_t byte;
 
+// TODO add following functions to ref_bit class as static
 int getNthBit(byte num, uint8_t n);
 void printByte(byte x);
 void setNthBit(byte& bitArray, uint8_t n);
 void dropNthBit(byte& bitArray, uint8_t n);
-
 
 
 
@@ -36,6 +36,10 @@ public:
 
 
 
+	// ? Copy constructor which calls operator=
+
+
+
 	/// If bit is 0, then it is fliped to 1
 	/// If bit is 1, then it is fliped to 0
 	void flip() {
@@ -48,9 +52,11 @@ public:
 	}
 
 
+
+	// TODO maybe return ref_bit& or ref_bit ?
 	/// Make possible to do sth like :
 	///		refBit = true;
-	bool operator=(const bool& value) {
+	ref_bit& operator=(const bool& value) {
 		if (value) {
 			setNthBit(*data, num_of_bit);
 		}
@@ -58,31 +64,33 @@ public:
 			dropNthBit(*data, num_of_bit);
 		}
 
-		return value;
+		return *this;
 	}
 
 
-	// ASK if it has to be const
+
+	ref_bit& operator=(const ref_bit& other) {
+		return (*this = bool(other));
+	}
+
+
+
 	/// Casting to bool function
 	operator bool() const {
 		return getNthBit(*data, num_of_bit);
 	}
 
 
+
 	/// Make possible to do: 
-	///		std::cout << refBit;
-	friend std::ostream& operator<<(const std::ostream&, const ref_bit&);
+	///		std::cout << refBitInstance;
+	friend std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
+		os << (bool)bit << std::endl;
+
+		return os;
+	}
 
 };
-
-
-
-/// Used in ref_bit structure as friend function
-std::ostream& operator<<(std::ostream& os, const ref_bit& bit) {
-	os << (bool)bit << std::endl;
-
-	return os;
-}
 
 
 /// \param n < 8

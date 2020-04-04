@@ -8,9 +8,13 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
+// TODO change this file to .h extension
+// TODO macro TEMPLATE_TEST_CLASS which CONCAT(TYPE_TO_TEST, _methodName)
 // ASK why not working CONCAT as expected when CONCAT(a, b) a ## b
 #define CONCAT2(a, b) a ## b
 #define CONCAT(a, b) CONCAT2(a, b)
+
+#define TEMPLATE_TEST_METHOD(b) TEST_METHOD(CONCAT(TYPE_TO_TEST, b))
 
 
 // TESTs FOR ALL THE TYPES
@@ -27,23 +31,20 @@ public:
 
 
 
-	TEST_METHOD(CONCAT(
-		TYPE_TO_TEST, _size_ExpectedSizeIsZero))
+	TEMPLATE_TEST_METHOD(size_ExpectedSizeIsZero)
 	{
 		Assert::AreEqual(testArray.size(), (size_t)0);
 	}
 
 
 
-	TEST_METHOD(CONCAT(
-		TYPE_TO_TEST, _empty_ExpectedEmptyArray)) {
+	TEMPLATE_TEST_METHOD(empty_ExpectedEmptyArray) {
 		Assert::IsTrue(testArray.isEmpty());
 	}
 
 
 
-	TEST_METHOD(CONCAT(
-		TYPE_TO_TEST, _fill_FillArrayExpectedSizeIs10)) {
+	TEMPLATE_TEST_METHOD(fill_FillArrayExpectedSizeIs10) {
 		testArray.fill(1);
 
 		Assert::AreEqual((size_t)capacity, testArray.size());
@@ -51,8 +52,7 @@ public:
 
 
 
-	TEST_METHOD( CONCAT(
-		TYPE_TO_TEST, _operatorEquality_CompareObjectsWithJustDifferentCapacityExpectedTrue) ) {
+	TEMPLATE_TEST_METHOD(operatorEquality_CompareObjectsWithJustDifferentCapacityExpectedTrue) {
 		int otherCapacity = 100;
 		array<TYPE_TO_TEST> otherArray(otherCapacity);
 
@@ -61,8 +61,7 @@ public:
 
 
 
-	TEST_METHOD( CONCAT(
-		TYPE_TO_TEST, _copyConstructor_WorkingAsExpected) ) {
+	TEMPLATE_TEST_METHOD(copyConstructor_WorkingAsExpected) {
 		array<TYPE_TO_TEST> otherArray = testArray;
 
 		Assert::IsTrue(testArray == otherArray);
@@ -70,8 +69,7 @@ public:
 
 
 
-	TEST_METHOD( CONCAT(
-		TYPE_TO_TEST, _operatorEquals_WorkingAsExpected) ) {
+	TEMPLATE_TEST_METHOD(operatorEquals_WorkingAsExpected) {
 		array<TYPE_TO_TEST> otherArray;
 		otherArray = testArray;
 
@@ -80,15 +78,13 @@ public:
 
 
 
-	TEST_METHOD( CONCAT(
-		TYPE_TO_TEST, _operatorEquality_CompareToSameTestArrayExpectedTrue) ) {
+	TEMPLATE_TEST_METHOD(operatorEquality_CompareToSameTestArrayExpectedTrue) {
 		Assert::IsTrue(testArray == testArray);
 	}
 
 
 
-	TEST_METHOD( CONCAT(
-		TYPE_TO_TEST, _pop_back_invokingPopBackOnEmptyArrayExceptionIsExpected) ) {
+	TEMPLATE_TEST_METHOD(pop_back_invokingPopBackOnEmptyArrayExceptionIsExpected) {
 		try {
 			testArray.pop_back();
 			Assert::Fail();
@@ -100,8 +96,7 @@ public:
 
 
 
-	TEST_METHOD( CONCAT(
-		TYPE_TO_TEST, _back_invokingBackOnEmptyArrayExceptionIsExpected) ) {
+	TEMPLATE_TEST_METHOD(back_invokingBackOnEmptyArrayExceptionIsExpected) {
 		try {
 			testArray.back();
 			Assert::Fail();
@@ -113,8 +108,7 @@ public:
 
 
 
-	TEST_METHOD( CONCAT(
-			TYPE_TO_TEST, _at_invokingAtOnEmptyExceptionOutOfRangeIsExpected) ) {
+	TEMPLATE_TEST_METHOD(at_invokingAtOnEmptyExceptionOutOfRangeIsExpected) {
 		for (int i = 0; i < 10; ++i) {
 			try {
 				testArray.at(i);

@@ -323,7 +323,7 @@ public:
 		ref_bit elemToReturn = this->operator[](lastElemIndex);
 		--usedCapacity;
 
-		return elemToReturn;
+		return elemToReturn; // TODO return operator[(usedCapacity-- - 1]
 	}
 
 

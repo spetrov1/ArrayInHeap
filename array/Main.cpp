@@ -15,6 +15,7 @@ int main()
     std::cout << b[0] << b[1];
 
     b[0] = b[1] = false;
+    b[1] = true;
     std::cout << b[0] << b[1];
     
 

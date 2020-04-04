@@ -3,18 +3,18 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+	
 
 	#define TYPE_TO_TEST int
-	#include "TemplateTests.cpp"
+	#include "TemplateTests.h"
 	#undef TYPE_TO_TEST
 
 	#define TYPE_TO_TEST float
-	#include "TemplateTests.cpp"
+	#include "TemplateTests.h"
 	#undef TYPE_TO_TEST
 
-	// TODO not all tests work correctly
 	#define TYPE_TO_TEST bool
-	#include "TemplateTests.cpp"
+	#include "TemplateTests.h"
 	#undef TYPE_TO_TEST
 	
 	
@@ -266,6 +266,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 			Assert::IsFalse(testArray[0]);
 		}
+
 
 
 		TEST_METHOD(push_back_ExpectedSizeIs10) {

@@ -18,8 +18,8 @@
     <ClCompile Include="arrayTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TemplateTests.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TemplateTests.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
