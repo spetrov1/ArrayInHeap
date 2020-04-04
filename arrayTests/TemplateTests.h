@@ -8,13 +8,13 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 
-// TODO change this file to .h extension
-// TODO macro TEMPLATE_TEST_CLASS which CONCAT(TYPE_TO_TEST, _methodName)
 // ASK why not working CONCAT as expected when CONCAT(a, b) a ## b
 #define CONCAT2(a, b) a ## b
 #define CONCAT(a, b) CONCAT2(a, b)
 
 #define TEMPLATE_TEST_METHOD(b) TEST_METHOD(CONCAT(TYPE_TO_TEST, b))
+
+
 
 
 // TESTs FOR ALL THE TYPES
